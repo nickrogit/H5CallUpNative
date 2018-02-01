@@ -1,7 +1,8 @@
 forked from AlanZhang001/H5CallUpNative，
 优化：
-1.**唤醒失败跳转商店下载链接为android和ios两个链接；
-2.**无apkInfo字段时就不兼容安卓chrome浏览器，唤不醒就直接跳商店地址下载
+- 唤醒失败跳转商店下载链接为android和ios两个链接；
+
+- 无apkInfo字段时就不兼容安卓chrome浏览器，唤不醒就直接跳商店地址下载
 
 ```
 // 使用
