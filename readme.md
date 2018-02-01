@@ -1,3 +1,8 @@
+forked from AlanZhang001/H5CallUpNative，
+优化：
+1.**唤醒失败跳转商店下载链接为android和ios两个链接；
+2.**无apkInfo字段时就不兼容安卓chrome浏览器，唤不醒就直接跳商店地址下载
+
 # 关于通过H5页面唤Native户端的介绍
 
 本文档用于介绍通过H5端唤起本地NN客户端的研究过程！刚进新公司，导师让研究下5页面唤NNtive户端的课题，后面公司客户端产品可能会用到这方面的技术，所以研究了下，写成文章，保密需要，去掉了和具体客户端绑定的内容，希望对那些想了解这方面知识的人有用！
@@ -148,7 +153,7 @@ opera对于iframe.src和a.href的方式都能支持，所以对chrome及先关�
    - QQ webviwe上能打开，偶尔会失败；
    - IOS上启动速度相对较快
 
-## 相关代码
+## 优化前-相关代码
 对代码进行简单的封装，代码如下，在使用时需要针对当前的app做必要设置，采用UMD的写法：
 
 代码见[tool-nativeSchema.js](https://github.com/AlanZhang001/H5CallUpNative/blob/master/tool-nativeSchema.js)
@@ -171,24 +176,19 @@ require(["tool-nativeSchema.js"],function(nativeSchema){
 ```
 // 使用
 nativeSchema.loadSchema({
-    // 某个schema协议，例如login,
-    schema: "",
-
-    //schema头协议，
-    protocal:"xxx",
-
-    //发起唤醒请求后，会等待loadWaiting时间，超时则跳转到failUrl，默认3000ms
-    loadWaiting:"3000",
-
-    //唤起失败时的跳转链接，默认跳转到应用商店下载页
-    failUrl:"xxx",
-
-    // Android 客户端信息,可以询问 Android同事
-	apkInfo:{
-        PKG:"",
-        CATEGORY:"",
-        ACTION:""
-	}
+    protocal:"xxxx",//必选，schema头协议，android和ios规范统一写成一样的。    
+   	failUrl:{
+      		ANDROID: "",
+      		IOS:""
+      	},//唤起失败时的跳转链接，默认跳转到下载页,分android和ios不同商店           
+   schema: "index",//可选，通过NN打开某个链接
+   loadWaiting:"3000",//可选，发起唤醒请求后，会等待loadWaiting时间，超时则跳转到failUrl，默认3000ms   
+   // apk信息,请根据实际情况填写，不兼容安卓chrome浏览器可不要这个apkInfo字段
+   apkInfo:{
+       PKG: "cn.xxxx.xxxxx",
+       CATEGORY: "android.intent.category.DEFAULT",
+       ACTION: "android.intent.action.VIEW"
+   }
 });
 ```
 

@@ -37,20 +37,20 @@
     var AppConfig = {
 
         // 协议头
-        PROTOCAL:"xxxx",
+        PROTOCAL:"",
 
         // 主页
-        HOME: "xxxx",
+        HOME: "index",
 
         // 唤起失败时的跳转链接
         FAILBACK: {
-            ANDROID: "http://a.app.qq.com/o/simple.jsp?pkgname=cn.futu.trader&g_f=991653",
-            IOS:"http://a.app.qq.com/o/simple.jsp?pkgname=cn.futu.trader&g_f=991653"
+            ANDROID: "",
+            IOS:""
         },
 
         // Android apk 相关信息
         APK_INFO: {
-            PKG: "cn.xx.xx",
+            PKG: "",
             CATEGORY: "android.intent.category.DEFAULT",
             ACTION: "android.intent.action.VIEW"
         },
@@ -83,9 +83,9 @@
             AppConfig.LOAD_WAITING = config.loadWaiting || AppConfig.LOAD_WAITING ;
 
             if (browser.isIOS()) {
-                AppConfig.FAILBACK.IOS = config.failUrl || AppConfig.FAILBACK.IOS;
+                AppConfig.FAILBACK.IOS = config.failUrl.IOS || AppConfig.FAILBACK.IOS;
             } else if (browser.isAndroid()) {
-                AppConfig.FAILBACK.ANDROID = config.failUrl || AppConfig.FAILBACK.ANDROID;
+                AppConfig.FAILBACK.ANDROID = config.failUrl.ANDROID || AppConfig.FAILBACK.ANDROID;
                 AppConfig.APK_INFO = config.apkInfo || AppConfig.APK_INFO;
             }
 
@@ -109,13 +109,18 @@
 
             // 如果是安卓chrome浏览器，则通过intent方式打开
             if (isAndroidChrome) {
-                schemaStr =  "intent://" + schemaStr +"#Intent;"  +
+            	//若包名为空则不兼容安卓chrome浏览器
+            	if(AppConfig.APK_INFO.PKG == ""){
+            		schemaStr = AppConfig.PROTOCAL + "://" + schemaStr;
+            	}else{
+            		schemaStr =  "intent://" + schemaStr +"#Intent;"  +
                              "scheme="   + AppConfig.PROTOCAL          + ";"+
                              "package="  + AppConfig.APK_INFO.PKG      + ";"+
                              "category=" + AppConfig.APK_INFO.CATEGORY + ";"+
                              "action="   + AppConfig.APK_INFO.ACTION   + ";"+
                              "S.browser_fallback_url=" + encodeURIComponent(AppConfig.FAILBACK.ANDROID) + ";" +
                              "end";
+            	}                
             } else {
                 schemaStr = AppConfig.PROTOCAL + "://" + schemaStr;
             }
